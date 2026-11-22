@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lights Out · No. 5 Quiet Street</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- The sky: stars are added by app.js and get brighter as lights go out -->
+  <div class="sky" aria-hidden="true">
+    <div class="stars" id="stars"></div>
+    <div class="moon"></div>
+    <div class="shooting-star" id="shooting-star"></div>
+  </div>
+
+  <main class="street">
+
+    <section class="building" aria-label="Lights Out puzzle">
+      <div class="rooftop">
+        <div class="sign" id="sign">
+          <span class="sign-title">Lights&nbsp;Out</span>
+          <span class="sign-sub">turn off every light</span>
+        </div>
+        <div class="sign-legs" aria-hidden="true"><i></i><i></i></div>
+      </div>
+
+      <div class="facade">
+        <div class="windows" id="windows"
+             style="--grid-size: {{ grid_size }}"
+             role="grid" aria-label="Five by five grid of lights"></div>
+
+        <div class="lobby">
+          <div class="plaque">
+            <span class="plaque-label">Moves</span>
+            <span class="plaque-value" id="moves">0</span>
+          </div>
+          <div class="plaque">
+            <span class="plaque-label">Still lit</span>
+            <span class="plaque-value" id="lights-on">0</span>
+          </div>
+          <div class="plaque">
+            <span class="plaque-label">Hints</span>
+            <span class="plaque-value" id="hints">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sidewalk">
+      <div class="controls">
+        <button class="control" id="hint-button" type="button">
+          <span class="control-icon" aria-hidden="true">◎</span> Hint
+        </button>
+        <button class="control" id="reset-button" type="button">
+          <span class="control-icon" aria-hidden="true">↺</span> Reset
+        </button>
+        <button class="control control-main" id="new-button" type="button">
+          <span class="control-icon" aria-hidden="true">✦</span> New Game
+        </button>
+      </div>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+
+      <footer class="credits">
+        <span>Night shift crew: <strong>{{ team_name }}</strong></span>
+        <button class="link-button" id="rules-button" type="button">Read the notice again</button>
+      </footer>
+    </div>
+  </main>
+
+
+  <!-- ============ Instruction screen (shown at launch) ============ -->
+  <div class="overlay" id="intro" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+    <article class="notice">
+      <div class="pin" aria-hidden="true"></div>
+      <p class="notice-kicker">No. 5 Quiet Street &middot; Lobby notice board</p>
+      <h1 id="intro-title">Notice to all residents</h1>
+      <p class="notice-lead">
+        Tonight the city wants to see the stars. Your job:
+        <strong>switch off every light in the building.</strong>
+      </p>
+
+      <div class="notice-grid">
+        <section>
+          <h2>On &amp; off</h2>
+          <p class="legend">
+            <span class="mini-window is-on"></span> glowing = <b>ON</b><br>
+            <span class="mini-window"></span> dark = <b>OFF</b>
+          </p>
+        </section>
+
+        <section>
+          <h2>How a click works</h2>
+          <div class="plus-demo" aria-hidden="true">
+            <i></i><i class="is-on"></i><i></i>
+            <i class="is-on"></i><i class="is-on is-clicked"></i><i class="is-on"></i>
+            <i></i><i class="is-on"></i><i></i>
+          </div>
+          <p>
+            Clicking a window flips it <em>and</em> the windows directly above,
+            below, left and right of it. Diagonals are never touched.
+            Edges and corners flip fewer windows.
+          </p>
+        </section>
+      </div>
+
+      <section>
+        <h2>How to win</h2>
+        <p>Make all 25 windows dark. Every puzzle can be solved &mdash; try to do it in as few moves as you can.</p>
+      </section>
+
+      <section>
+        <h2>The buttons</h2>
+        <ul class="button-list">
+          <li><b>◎ Hint</b> &mdash; marks a good next window with a moonlight ring. It doesn't change any lights or add a move.</li>
+          <li><b>↺ Reset</b> &mdash; puts this puzzle back the way it started and sets moves and hints to 0.</li>
+          <li><b>✦ New Game</b> &mdash; a brand new puzzle with fresh counters.</li>
+        </ul>
+      </section>
+
+      <footer class="notice-footer">
+        <p class="signature">
+          Signed, the superintendents &mdash;
+          <strong>{{ team_name }}</strong>
+        </p>
+        <button class="start-button" id="start-button" type="button">Start the night shift &rarr;</button>
+      </footer>
+    </article>
+  </div>
+
+
+  <!-- ============ Victory message ============ -->
+  <div class="overlay is-hidden" id="victory" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+    <article class="victory-card">
+      <p class="victory-kicker">The whole street is dark</p>
+      <h2 id="victory-title">Puzzle solved!</h2>
+      <p>Congratulations! You turned off all the lights.</p>
+      <dl class="totals">
+        <div><dt>Total moves</dt><dd id="final-moves">0</dd></div>
+        <div><dt>Hints used</dt><dd id="final-hints">0</dd></div>
+      </dl>
+      <div class="victory-actions">
+        <button class="start-button" id="victory-new" type="button">New Game</button>
+        <button class="link-button" id="victory-close" type="button">Just look at the stars</button>
+      </div>
+    </article>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
