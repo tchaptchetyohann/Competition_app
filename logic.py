@@ -1,3 +1,5 @@
+import random
+
 GRID_SIZE = 5
 
 
@@ -32,3 +34,17 @@ def is_solved(board):
             if cell == 1:
                 return False
     return True
+
+
+def generate_board():
+    while True:
+        board = [[0] * GRID_SIZE for _ in range(GRID_SIZE)]
+
+        # click random cells on an empty board, so it can always be solved
+        for row in range(GRID_SIZE):
+            for col in range(GRID_SIZE):
+                if random.randint(0, 1) == 1:
+                    board = toggle(board, row, col)
+
+        if not is_solved(board):
+            return board

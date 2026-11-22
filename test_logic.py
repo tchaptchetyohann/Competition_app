@@ -1,6 +1,6 @@
 import unittest
 
-from logic import GRID_SIZE, is_solved, toggle
+from logic import GRID_SIZE, generate_board, is_solved, toggle
 
 
 def empty_board():
@@ -56,6 +56,26 @@ class IsSolvedTests(unittest.TestCase):
         before = toggle(empty_board(), 2, 2)
         is_solved(board)
         self.assertEqual(board, before)
+
+
+class GenerateBoardTests(unittest.TestCase):
+
+    def test_size_and_values(self):
+        for _ in range(100):
+            board = generate_board()
+            self.assertEqual(len(board), GRID_SIZE)
+            for line in board:
+                self.assertEqual(len(line), GRID_SIZE)
+                for cell in line:
+                    self.assertIn(cell, [0, 1])
+
+    def test_never_already_solved(self):
+        for _ in range(100):
+            self.assertFalse(is_solved(generate_board()))
+
+    def test_boards_are_different(self):
+        boards = [generate_board() for _ in range(20)]
+        self.assertGreater(len({str(b) for b in boards}), 1)
 
 
 if __name__ == "__main__":

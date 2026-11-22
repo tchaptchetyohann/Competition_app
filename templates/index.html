@@ -7,8 +7,9 @@
       background: #1e1e2e;
       font-family: sans-serif;
       display: flex;
-      justify-content: center;
-      padding-top: 60px;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 260px;
     }
 
     .grid {
@@ -20,12 +21,47 @@
     .cell {
       width: 70px;
       height: 70px;
+      padding: 8px;
+      box-sizing: border-box;
       border-radius: 8px;
-      background: #3a3a50;
+      background: #6b6b85;
+    }
+
+    .cell img {
+      width: 100%;
+      height: 100%;
     }
 
     .on {
       background: #ffd166;
+    }
+
+    .moves {
+      width: 100px;
+      height: 100px;
+      margin-top: 30px;
+      border-radius: 8px;
+      background: #3a3a50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .moves span {
+      font-size: 36px;
+      font-weight: bold;
+    }
+
+    .button {
+      margin-top: 20px;
+      padding: 12px 28px;
+      border-radius: 8px;
+      background: #ffd166;
+      color: #1e1e2e;
+      font-weight: bold;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -33,10 +69,24 @@
   <div class="grid">
     {% for row in range(5) %}
       {% for col in range(5) %}
-        <a href="/click/{{ row }}/{{ col }}"
-           class="cell {% if board[row][col] == 1 %}on{% endif %}"></a>
+        {% if board[row][col] == 1 %}
+          <a href="/click/{{ row }}/{{ col }}" class="cell on">
+            <img src="/static/window_on.png" alt="light on">
+          </a>
+        {% else %}
+          <a href="/click/{{ row }}/{{ col }}" class="cell">
+            <img src="/static/window_off.png" alt="light off">
+          </a>
+        {% endif %}
       {% endfor %}
     {% endfor %}
   </div>
+
+  <div class="moves">
+    Moves
+    <span>{{ moves }}</span>
+  </div>
+
+  <a href="/reset" class="button">Reset</a>
 </body>
 </html>
