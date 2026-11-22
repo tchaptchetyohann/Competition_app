@@ -1,0 +1,48 @@
+{# The instructions pop-up. index.html includes this file. #}
+<div class="overlay">
+  <div class="popup">
+    <a href="/instructions/close" class="close"><img src="/static/icons/delete.png" alt="close"></a>
+
+    <h2>How to play</h2>
+
+    <div class="details">
+      <h3>Goal</h3>
+      <p>
+        Turn off every light.
+        <img class="mini-window on" src="/static/window_on.png" alt=""> yellow windows are ON,
+        <img class="mini-window" src="/static/window_off.png" alt=""> grey windows are OFF.
+      </p>
+    </div>
+
+    <div class="details">
+      <h3>How a click works</h3>
+      <p>
+        Clicking a window flips it and the windows directly above, below, left and right of it.
+        Diagonal windows never change. Windows on the edges and corners flip fewer neighbours.
+      </p>
+    </div>
+
+    <div class="details">
+      <h3>Winning</h3>
+      <p>
+        When all 25 windows are off, you win. Finish in {{ target }} moves or fewer to earn
+        10 points. The timer starts on your first click.
+      </p>
+    </div>
+
+    <div class="functionalities">
+      <div class="details function-button">
+        <h3>Reset</h3>
+        <p>Puts this puzzle back to how it started</p>
+      </div>
+      <div class="details function-button">
+        <h3>New Game</h3>
+        <p>Starts a brand new puzzle</p>
+      </div>
+    </div>
+
+    <a href="/instructions/close" class="start-button">Start playing</a>
+
+    <p class="credits">Developed by Ali and Cedric</p>
+  </div>
+</div>

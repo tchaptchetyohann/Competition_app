@@ -2,10 +2,10 @@
 <html>
 <head>
   <title>Lights Out</title>
+  <link rel="stylesheet" href="/static/instructions.css">
   <style>
     body {
       margin: 0;
-      min-height: 100vh;
       background: #1e1e2e;
       font-family: sans-serif;
       display: flex;
@@ -90,7 +90,7 @@
       margin-top: 20px;
     }
 
-    .moves {
+    .counter {
       width: 100px;
       height: 100px;
       border-radius: 8px;
@@ -102,7 +102,7 @@
       justify-content: center;
     }
 
-    .moves span {
+    .counter span {
       font-size: 36px;
       font-weight: bold;
     }
@@ -120,6 +120,12 @@
       color: white;
       font-weight: bold;
       text-decoration: none;
+    }
+
+    .instructions-link {
+      margin-top: 16px;
+      color: #c9c9dc;
+      font-size: 14px;
     }
 
     .disabled {
@@ -182,11 +188,11 @@
     </div>
 
     <div class="counters">
-      <div class="moves">
+      <div class="counter">
         Moves
         <span>{{ moves }}</span>
       </div>
-      <div class="moves">
+      <div class="counter">
         Time
         <span id="timer">{{ "%d:%02d" | format(seconds // 60, seconds % 60) }}</span>
       </div>
@@ -202,7 +208,13 @@
       {% endif %}
       <a href="/new" class="button">New Game</a>
     </div>
+
+    <a href="/instructions" class="instructions-link">How to play</a>
   </div>
+
+  {% if show_instructions %}
+    {% include "instructions.html" %}
+  {% endif %}
 
   {% if timer_running %}
     <script>
