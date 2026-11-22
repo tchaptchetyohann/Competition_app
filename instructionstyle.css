@@ -1,0 +1,85 @@
+body {
+    width: 100%;
+    min-height:100vh;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+    body .container {
+        width: 60%;
+        min-height: 300%;
+        box-sizing: border-box;
+        background-color: #142D4E;
+        border: 1px solid;
+        border-radius: 20px;
+    }
+button{
+    background:none;
+    border:none;
+    display:block;
+    margin-left:auto;
+}
+.close img{
+    width:26px;
+    height:25px;
+    object-fit:contain;
+}
+.instruction {
+    width: 100%;
+    text-align: center;
+    color:antiquewhite;
+}
+.details {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    margin:  20px;
+    flex: 1;
+    background-color: #F4F6F9;
+    border: 1px solid #DCE2EA;
+    border-radius: 10px;
+    
+    
+}
+.internal {
+    border: 1px solid #DCE2EA;
+    border-radius:0 0 20px 20px;
+}
+.details h3 {
+    color: #142D4E;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.details p {
+    color: #64748B;
+    font-size: 14px;
+    margin: 0;
+}
+.funtionalities{
+    margin:0 20px;
+    display:flex;
+    justify-content:center;
+    align-items:streched;
+    gap:20px;
+
+}
+
+.function-button{
+    flex:1;
+    background-color:#F4F6F9;
+    border:1px solid #DCE2EA;
+    border-radius:10px;
+    text-align:center;
+}
+.function-button h3{
+    color: #142D4E;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.function-button p {
+    color: #64748B;
+    font-size: 14px;
+    margin: 0;
+}
