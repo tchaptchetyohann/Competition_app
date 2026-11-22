@@ -1,60 +1,4 @@
-# How the game works, from start to finish
-# ----------------------------------------
-#
-# 1. Starting the app
-#    Running "python app.py" starts a small web server (Flask). When this file
-#    loads, it makes the first puzzle with generate_board() and saves it twice:
-#      start_board - the puzzle as it first appeared, so Reset can go back to it
-#      board       - a separate copy that the player actually changes
-#    moves, the timer (start_time / end_time) and points all start empty.
-#    All of this lives here on the server, not in the browser.
-#
-#    The instructions pop-up (templates/instructions.html) is shown first.
-#    Its close button and "Start playing" go to "/instructions/close", and the
-#    "How to play" link under the buttons goes to "/instructions" to open it
-#    again. show_instructions remembers whether it's open, otherwise it would
-#    pop up again every time the page reloads after a click.
-#
-# 2. Showing the page  ->  "/"  (home)
-#    The browser asks for "/". home() sends the current board, moves, time,
-#    points and whether the game is won into templates/index.html, which
-#    draws it: 25 squares (yellow = on, grey = off), the counters and the
-#    buttons. The page never changes the game itself - it only shows it.
-#
-# 3. Clicking a light  ->  "/click/<row>/<col>"  (click)
-#    Every square on the page is a link like /click/2/3. Clicking one runs
-#    click(2, 3), which:
-#      - does nothing if the puzzle is already solved (the board is locked)
-#      - starts the timer if this is the first click
-#      - calls toggle() from logic.py to flip the cell and its neighbours
-#      - adds 1 to moves
-#      - if is_solved() says every light is off: stops the timer and gives
-#        10 points if it took TARGET_MOVES (11) or fewer, otherwise 0
-#    Then it redirects the browser back to "/", so the new board is shown.
-#
-# 4. The timer
-#    The server stores the real times. elapsed_seconds() works out what to
-#    show: 0 before the first click, the frozen time after winning, or the
-#    time so far while playing. While the game is running, a small script in
-#    index.html adds 1 every second so the number ticks on screen.
-#
-# 5. Reset  ->  "/reset"  (reset)
-#    Puts a fresh copy of start_board back, and sets moves and the timer to 0.
-#    It's blocked after winning, so the player can't replay a won puzzle.
-#
-# 6. Winning
-#    Once every light is off, the page shows the win message and the points
-#    earned, the background turns light, and the squares stop being links.
-#    Only New Game works from here.
-#
-# 7. New Game  ->  "/new"  (new_game)
-#    Makes a new puzzle with generate_board(), saves it as the new start_board
-#    (so Reset goes back to THIS puzzle), and clears moves and the timer.
-#    The total points are kept, so they add up over several games.
-#
-# Every route changes the variables below and then sends the browser back to
-# "/", which draws the page again with the new values.
-
+# http://127.0.0.1:5000
 import time
 from flask import Flask, redirect, render_template
 from logic import generate_board, is_solved, toggle
@@ -75,6 +19,7 @@ end_time = None
 points = 0
 # points from the last win (10 or 0)
 points_earned = None
+# keeps the instructions closed after the page reloads
 show_instructions = True
 
 
@@ -86,6 +31,7 @@ def elapsed_seconds():
     return int(time.time() - start_time)
 
 
+# draws the page from the current board (1 = ON picture, 0 = OFF picture)
 @app.route("/")
 def home():
     return render_template("index.html", board=board, moves=moves,
@@ -96,6 +42,7 @@ def home():
                            show_instructions=show_instructions)
 
 
+# row and col come from the address, e.g. /click/2/3
 @app.route("/click/<int:row>/<int:col>")
 def click(row, col):
     global board, moves, start_time, end_time, points, points_earned
@@ -143,7 +90,6 @@ def new_game():
     start_time = None
     end_time = None
     return redirect("/")
-
 
 
 @app.route("/instructions")

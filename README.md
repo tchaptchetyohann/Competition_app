@@ -1,16 +1,44 @@
 # Lights Out
 
-Game logic for the 5x5 Lights Out puzzle.
+A 5x5 Lights Out puzzle game made with Python and Flask. Clicking a window flips it and the windows above, below, left and right of it. The goal is to turn every light off.
 
-- `logic.py` - `toggle`, `is_solved`, `generate_board`
+## Libraries used
 
-Run the tests:
+- [Flask](https://flask.palletsprojects.com/) - runs the web page (installed with pip)
+- `random` - makes random puzzles (built into Python)
+- `time` - the timer (built into Python)
+- `unittest` - the tests (built into Python)
+
+## How to run
+
+You need Python 3 installed.
+
+1. Install Flask:
+
+   ```
+   pip install flask
+   ```
+
+2. Start the game:
+
+   ```
+   python app.py
+   ```
+
+3. Open <http://127.0.0.1:5000> in your browser. Press `Ctrl+C` in the terminal to stop it.
+
+To run the tests:
 
 ```
 python -m unittest
 ```
 
-## Image credits
+On macOS and Linux you may need to type `python3` instead of `python`, and `pip3` instead of `pip`.
 
-- Night background: "Full moon sets over ridge of Sepulcher Mountain" by NPS / Jacob W. Frank (Yellowstone National Park). Public domain. [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Full_moon_sets_over_ridge_of_Sepulcher_Mountain_(49706308262).jpg)
-- Win background: "Baltic Sea sunrise" by J. Triepke, licensed [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Baltic_Sea_sunrise_-_16667379220.jpg)
+## Files
+
+- `logic.py` - the game rules: `toggle`, `is_solved`, `generate_board`
+- `app.py` - the web server
+- `templates/` - the game page and the instructions pop-up
+- `static/` - the CSS and images
+- `test_logic.py` - the tests
