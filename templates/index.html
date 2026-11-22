@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <title>Lights Out</title>
+  <style>
+    body {
+      background: #1e1e2e;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      padding-top: 60px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 70px);
+      gap: 8px;
+    }
+
+    .cell {
+      width: 70px;
+      height: 70px;
+      border-radius: 8px;
+      background: #3a3a50;
+    }
+
+    .on {
+      background: #ffd166;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    {% for row in range(5) %}
+      {% for col in range(5) %}
+        <a href="/click/{{ row }}/{{ col }}"
+           class="cell {% if board[row][col] == 1 %}on{% endif %}"></a>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</body>
+</html>
