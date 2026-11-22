@@ -4,12 +4,60 @@
   <title>Lights Out</title>
   <style>
     body {
+      margin: 0;
+      min-height: 100vh;
       background: #1e1e2e;
       font-family: sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 260px;
+      padding-top: 24px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 40px;
+      border-radius: 16px;
+      background: #2a2a3d;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 16px;
+      color: white;
+      font-size: 15px;
+    }
+
+    .top-bar strong {
+      color: #ffd166;
+    }
+
+    .divider {
+      width: 100%;
+      margin: 20px 0 0;
+      border: none;
+      border-top: 2px solid #44445c;
+    }
+
+    h1 {
+      margin: 0;
+      color: #ffd166;
+      font-size: 48px;
+    }
+
+    .subtitle {
+      margin: 6px 0 20px;
+      color: white;
+      font-size: 18px;
+    }
+
+    body.won {
+      background: #f5f0e1;
     }
 
     .grid {
@@ -36,10 +84,15 @@
       background: #ffd166;
     }
 
+    .counters {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
     .moves {
       width: 100px;
       height: 100px;
-      margin-top: 30px;
       border-radius: 8px;
       background: #3a3a50;
       color: white;
@@ -54,39 +107,116 @@
       font-weight: bold;
     }
 
-    .button {
+    .buttons {
+      display: flex;
+      gap: 12px;
       margin-top: 20px;
+    }
+
+    .button {
       padding: 12px 28px;
       border-radius: 8px;
-      background: #ffd166;
-      color: #1e1e2e;
+      background: #3a3a50;
+      color: white;
       font-weight: bold;
       text-decoration: none;
     }
+
+    .disabled {
+      opacity: 0.4;
+    }
+
+    .win-message {
+      margin-bottom: 16px;
+      text-align: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      background: #3a3a50;
+      color: #ffd166;
+      font-size: 18px;
+      font-weight: bold;
+    }
   </style>
 </head>
-<body>
-  <div class="grid">
-    {% for row in range(5) %}
-      {% for col in range(5) %}
-        {% if board[row][col] == 1 %}
-          <a href="/click/{{ row }}/{{ col }}" class="cell on">
-            <img src="/static/window_on.png" alt="light on">
-          </a>
+<body {% if won %}class="won"{% endif %}>
+  <div class="card">
+    <div class="top-bar">
+      <span>Target: <strong>{{ target }} moves</strong></span>
+      <span>Points: <strong>{{ points }}</strong></span>
+    </div>
+
+    <h1>Lights Out</h1>
+    <p class="subtitle">Turn off all the lights.</p>
+
+    {% if won %}
+      <div class="win-message">
+        You won! All the lights are off.<br>
+        {% if points_earned > 0 %}
+          You hit the target: +{{ points_earned }} points
         {% else %}
-          <a href="/click/{{ row }}/{{ col }}" class="cell">
-            <img src="/static/window_off.png" alt="light off">
-          </a>
+          More than {{ target }} moves, so no points this time
         {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="grid">
+      {% for row in range(5) %}
+        {% for col in range(5) %}
+          {# each square links to /click/row/col #}
+          {% if board[row][col] == 1 %}
+            <a href="/click/{{ row }}/{{ col }}" class="cell on">
+              <img src="/static/window_on.png" alt="light on">
+            </a>
+          {% elif won %}
+            {# after winning the squares aren't links, so they can't be clicked #}
+            <div class="cell">
+              <img src="/static/window_off.png" alt="light off">
+            </div>
+          {% else %}
+            <a href="/click/{{ row }}/{{ col }}" class="cell">
+              <img src="/static/window_off.png" alt="light off">
+            </a>
+          {% endif %}
+        {% endfor %}
       {% endfor %}
-    {% endfor %}
+    </div>
+
+    <div class="counters">
+      <div class="moves">
+        Moves
+        <span>{{ moves }}</span>
+      </div>
+      <div class="moves">
+        Time
+        <span id="timer">{{ "%d:%02d" | format(seconds // 60, seconds % 60) }}</span>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="buttons">
+      {% if won %}
+        <span class="button disabled">Reset</span>
+      {% else %}
+        <a href="/reset" class="button">Reset</a>
+      {% endif %}
+      <a href="/new" class="button">New Game</a>
+    </div>
   </div>
 
-  <div class="moves">
-    Moves
-    <span>{{ moves }}</span>
-  </div>
+  {% if timer_running %}
+    <script>
+      // Count up every second. Each click reloads the page with the real time from the server.
+      let seconds = {{ seconds }};
+      const timer = document.getElementById("timer");
 
-  <a href="/reset" class="button">Reset</a>
+      setInterval(function () {
+        seconds = seconds + 1;
+        const minutes = Math.floor(seconds / 60);
+        const rest = seconds % 60;
+        timer.textContent = minutes + ":" + String(rest).padStart(2, "0");
+      }, 1000);
+    </script>
+  {% endif %}
 </body>
 </html>
