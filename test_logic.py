@@ -1,6 +1,6 @@
 import unittest
 
-from logic import GRID_SIZE, toggle
+from logic import GRID_SIZE, is_solved, toggle
 
 
 def empty_board():
@@ -35,6 +35,27 @@ class ToggleTests(unittest.TestCase):
         for row, col in [(-1, 0), (0, -1), (5, 0), (0, 5)]:
             with self.assertRaises(ValueError):
                 toggle(empty_board(), row, col)
+
+
+class IsSolvedTests(unittest.TestCase):
+
+    def test_all_off(self):
+        self.assertTrue(is_solved(empty_board()))
+
+    def test_one_on(self):
+        board = empty_board()
+        board[4][4] = 1
+        self.assertFalse(is_solved(board))
+
+    def test_all_on(self):
+        board = [[1] * GRID_SIZE for _ in range(GRID_SIZE)]
+        self.assertFalse(is_solved(board))
+
+    def test_board_not_changed(self):
+        board = toggle(empty_board(), 2, 2)
+        before = toggle(empty_board(), 2, 2)
+        is_solved(board)
+        self.assertEqual(board, before)
 
 
 if __name__ == "__main__":

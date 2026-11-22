@@ -24,3 +24,11 @@ def toggle(board, row, col):
             new_board[r][c] = 1 - new_board[r][c]
 
     return new_board
+
+
+def is_solved(board):
+    for line in board:
+        for cell in line:
+            if cell == 1:
+                return False
+    return True
